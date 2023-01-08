@@ -35,7 +35,6 @@ public class Theory implements Test {
 
     @Override
     public void test() {
-        System.out.println("Test");
-    }
+        System.out.println("Test");}
 }
 
