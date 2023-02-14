@@ -3,10 +3,7 @@ package com.ravenhub;
 import com.ravenhub.util.ConnectionManager;
 import org.postgresql.Driver;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +51,10 @@ public class JdbcRunner {
         List<Long> result = new ArrayList<>();
         try(var connection = ConnectionManager.getConnection();
             var prepareStatement = connection.prepareStatement(sql)) {
-            prepareStatement.setLong(1, flightId);
+            prepareStatement.setLong(1, flightId); //  индекс параметра в запросе SQL, начиная с 1.
+            prepareStatement.setFetchSize(5); // количество строк, которые будут загружены за один раз из БД
+            prepareStatement.setQueryTimeout(10); // время ожидания выполнения запроса в секундах
+            prepareStatement.setMaxRows(10); // максимальное количество строк, которое может быть возвращено запросом
 
             ResultSet resultSet = prepareStatement.executeQuery();
 
@@ -64,5 +64,23 @@ public class JdbcRunner {
         }
 
         return result;
+    }
+
+    private static void checkMetaData() throws SQLException {
+        String sql = """
+                SELECT id
+                FROM ticket
+                WHERE flight_id =?
+                """;
+
+        try(var connection = ConnectionManager.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            System.out.println(metaData.getDatabaseProductName());
+            System.out.println(metaData.getDatabaseProductVersion());
+            System.out.println(metaData.getDriverName());
+            System.out.println(metaData.getDriverVersion());
+            System.out.println(metaData.getURL());
+
+        }
     }
 }
