@@ -20,7 +20,7 @@ public class JdbcRunner {
                 FROM ticket
                 """;
 
-        try (var connection = ConnectionManager.getConnection();
+        try (var connection = ConnectionManager.get();
                 var sta = connection.createStatement()) {
             var executeResult = sta.executeQuery(sql);
 
@@ -49,7 +49,7 @@ public class JdbcRunner {
                 """;
 
         List<Long> result = new ArrayList<>();
-        try(var connection = ConnectionManager.getConnection();
+        try(var connection = ConnectionManager.get();
             var prepareStatement = connection.prepareStatement(sql)) {
             prepareStatement.setLong(1, flightId); //  индекс параметра в запросе SQL, начиная с 1.
             prepareStatement.setFetchSize(5); // количество строк, которые будут загружены за один раз из БД
@@ -73,7 +73,7 @@ public class JdbcRunner {
                 WHERE flight_id =?
                 """;
 
-        try(var connection = ConnectionManager.getConnection()) {
+        try(var connection = ConnectionManager.get()) {
             DatabaseMetaData metaData = connection.getMetaData();
             System.out.println(metaData.getDatabaseProductName());
             System.out.println(metaData.getDatabaseProductVersion());
