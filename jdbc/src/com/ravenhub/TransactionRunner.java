@@ -6,6 +6,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Транзации в JDBC - это группа операций, которые должны быть выполнены как единое целое. Если одна из операций не выполнена,
+ * то все операции откатываются. Транзакции используются для обеспечения целостности данных. Например, если мы хотим удалить
+ * рейс и все билеты на этот рейс, то мы должны выполнить эти операции в рамках одной транзакции, чтобы не оставить в БД
+ */
 public class TransactionRunner {
 
     public static void main(String[] args) throws SQLException {
@@ -19,7 +24,7 @@ public class TransactionRunner {
         Connection connection = null;
         Statement statement = null;
         try {
-            connection = ConnectionManager.getConnection();
+            connection = ConnectionManager.get();
             connection.setAutoCommit(false);
 
             statement = connection.createStatement();

@@ -4,8 +4,7 @@ import com.ravenhub.entity.Flight;
 import com.ravenhub.execption.DaoException;
 import com.ravenhub.util.ConnectionManager;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +25,26 @@ public class FlightDao implements Dao<Long, Flight> {
             WHERE id = ?
             """;
 
+    private static final String DELETE_SQL = """
+            DELETE FROM flight f
+            WHERE f.id = ?
+            """;
+    private static final String SAVE_SQL = """
+            INSERT INTO flight(flight_no, departure_date, departure_airport_code, arrival_date, arrival_airport_code, aircraft_id, status) 
+            VALUES (?,?,?,?,?,?,?)
+            """;
+
+    private static final String UPDATE_SQL = """
+            UPDATE FLIGHT 
+            SET flight_no = ?,
+            departure_date = ?,
+            departure_airport_code = ?,
+            arrival_date = ?,
+            arrival_airport_code = ?,
+            aircraft_id = ?,
+            status = ?
+            WHERE id = ?
+            """;
     private FlightDao() {
     }
 
@@ -35,12 +54,38 @@ public class FlightDao implements Dao<Long, Flight> {
 
     @Override
     public boolean delete(Long id) {
-        return false;
+        try (Connection connection = ConnectionManager.get(); ) {
+            PreparedStatement statement = connection.prepareStatement(DELETE_SQL);
+            statement.setLong(1, id);
+
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
     }
 
     @Override
-    public Flight save(Flight ticket) {
-        return null;
+    public Flight save(Flight flight) {
+        try (Connection connection = ConnectionManager.get(); ) {
+            PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, flight.flightNo());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(flight.departureDate()));
+            preparedStatement.setString(3, flight.departureAirportCode());
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(flight.arrivalDate()));
+            preparedStatement.setString(5, flight.arrivalAirportCode());
+            preparedStatement.setInt(6, flight.aircraftId());
+            preparedStatement.setString(7, flight.status());
+
+            preparedStatement.executeUpdate();
+
+            var generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+
+            }
+            return flight;
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        }
     }
 
     @Override
