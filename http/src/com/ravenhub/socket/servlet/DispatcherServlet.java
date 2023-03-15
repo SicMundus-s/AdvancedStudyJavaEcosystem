@@ -1,8 +1,5 @@
 package com.ravenhub.socket.servlet;
 
-
-import com.ravenhub.socket.service.FlightService;
-import com.ravenhub.socket.util.JspHelper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,16 +8,22 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/flights")
-public class FlightServlet extends HttpServlet {
-
-    private final FlightService flightService = FlightService.getInstance();
+@WebServlet("/dispatcher")
+public class DispatcherServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("flights", flightService.findAll());
+//        req.getRequestDispatcher("/flights")
+//                .include(req, resp);
+//
+//        var writer = resp.getWriter();
+//        writer.write("Hello 2");
 
-        req.getRequestDispatcher(JspHelper.getPath("flights"))
-                .forward(req, resp);
+        resp.sendRedirect("/flights");
+
+//        getServletContext().getRequestDispatcher()
+
+//        req.setAttribute("1", "234");
+//        requestDispatcher.forward(req, resp);
     }
 }

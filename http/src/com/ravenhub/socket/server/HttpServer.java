@@ -52,7 +52,6 @@ public class HttpServer {
             outputStream.write(System.lineSeparator().getBytes());
             outputStream.write(body);
         } catch (IOException | InterruptedException e) {
-            // TODO: 2/27/21 log error message
             e.printStackTrace();
         }
     }
