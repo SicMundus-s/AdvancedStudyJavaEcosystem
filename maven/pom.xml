@@ -19,60 +19,68 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- Устанавливает кодировку проекта -->
     <maven.compiler.source>15</maven.compiler.source>
     <maven.compiler.target>15</maven.compiler.target>
+    <spring.version>5.1.7.RELEASE</spring.version>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>5.0.0</version>
-      <scope>provided</scope>
-    </dependency>
+<!--  <dependencyManagement> - Здесь указываются версии зависимостей которые используются в проекте,
+но они не подтягиваются наследниками от этой помки
+пока зависимость не будет указана в <dependencies теге у наследника-->
+  <dependencyManagement>
+    <dependencies>
 
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.2.19</version>
-      <scope>runtime</scope>
-      <!--      <optional>true</optional>-->
-    </dependency>
+      <dependency>
+        <groupId>jakarta.servlet</groupId>
+        <artifactId>jakarta.servlet-api</artifactId>
+        <version>5.0.0</version>
+        <scope>provided</scope>
+      </dependency>
 
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13.1</version>
-      <scope>test</scope> <!-- 5 обозначений scope: 1.compile - зависимости для компиляции 2.provided - зависимости будет прдоставлена кем-то другим
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>42.2.19</version>
+        <scope>runtime</scope>
+        <!--      <optional>true</optional>-->
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.1</version>
+        <scope>test</scope> <!-- 5 обозначений scope: 1.compile - зависимости для компиляции 2.provided - зависимости будет прдоставлена кем-то другим
                                    3.runtime - зависимость нужна во время выполнения 4.system - не использовать, указывается путь к джарке который лежит на компьютере
                                    5.test- нужна для зависимостей тестовых  -->
-      <exclusions>
-        <!-- Здесь можно исключать транзитивные зависимости при необходимости.
-        Необходимо для избежания ошибок во время компиляции и подтягивать более новые версии транзитивных зависимостей
-          если maven неявно подтянул старую версию -->
-      </exclusions>
+        <exclusions>
+          <!-- Здесь можно исключать транзитивные зависимости при необходимости.
+          Необходимо для избежания ошибок во время компиляции и подтягивать более новые версии транзитивных зависимостей
+            если maven неявно подтянул старую версию -->
+        </exclusions>
 
-    </dependency>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-webmvc</artifactId>
-      <version>5.0.5.RELEASE</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-beans</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-aop</artifactId>
-      <version>5.1.7.RELEASE</version>
-    </dependency>
-  </dependencies>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
+<!--  <pluginManagement> работает так же как </dependencyManagement> но для плагинов-->
   <build>
-    <finalName>ROOT</finalName>
+    <pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -170,8 +178,9 @@
             <phase>prepare-package</phase>
           </execution>
         </executions>
-      </plugin>
-    </plugins>
+       </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
 <!--  M2_HOME/conf-->
