@@ -4,6 +4,7 @@
 
   <groupId>org.example</groupId>
   <artifactId>maven</artifactId>
+<!--  SNAPSHOT - версия в разработке -->
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -15,6 +16,18 @@
     <module>web</module>
   </modules>
 
+  <scm>
+    <connection>scm:git:git@github.com:SicMundus-s/AdvancedStudyJavaEcosystem.git</connection>
+    <developerConnection>scm:git:git@github.com:SicMundus-s/AdvancedStudyJavaEcosystem.git</developerConnection>
+    <url>https://github.com/SicMundus-s/AdvancedStudyJavaEcosystem</url>
+  </scm>
+
+<!--  Проперти которые мы можем устанавливать-->
+<!--  project.*-->
+<!--  settings.*-->
+<!--  ${spring.version} - user prop-->
+<!--  env.* - Переменные среды-->
+<!--  System.getProperty -D -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- Устанавливает кодировку проекта -->
     <maven.compiler.source>15</maven.compiler.source>
@@ -78,8 +91,16 @@
     </dependencies>
   </dependencyManagement>
 
-<!--  <pluginManagement> работает так же как </dependencyManagement> но для плагинов-->
+
   <build>
+<!--    Указываем статические ресурсы для maven, весь эксперс лангвич будет заменён -->
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+    <!--  <pluginManagement> работает так же как </dependencyManagement> но для плагинов-->
     <pluginManagement>
     <plugins>
       <plugin>
@@ -179,9 +200,68 @@
           </execution>
         </executions>
        </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+                <mainClass>org.example.App</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.4.2</version>
+        <executions>
+          <execution>
+            <id>single-jar</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <descriptorRefs>jar-with-dependencies</descriptorRefs>
+              <archive>
+                <manifest>
+                  <mainClass>org.example.App</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+<!--      Релиз плагин мейвена, инструкции для перевода проекта в релиз-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>3.0.0-M6</version>
+      </plugin>
       </plugins>
     </pluginManagement>
   </build>
+
+<!--  Профили настроек, можно переопределять плагины, проперти, настройки-->
+  <profiles>
+    <profile>
+      <id>prod</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.1</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 <!--  M2_HOME/conf-->
 <!--  ~/.m2/settings.xml  - Здесь необходимо настроить удалённы репозиторий -->
