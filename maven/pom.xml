@@ -5,9 +5,15 @@
   <groupId>org.example</groupId>
   <artifactId>maven</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>pom</packaging>
 
+<!--  Наследники модуля maven-->
   <name>maven</name>
+  <modules>
+    <module>database</module>
+    <module>service</module>
+    <module>web</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> <!-- Устанавливает кодировку проекта -->
