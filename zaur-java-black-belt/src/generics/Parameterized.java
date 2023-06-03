@@ -1,12 +1,14 @@
 package generics;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Parameterized {
     public static void main(String[] args) {
 
         X<Integer> x = new Y<>(1);
-       Y<Integer> y = new Y<>(1);
+       Y<Double> y = new Y<>(333.333);
+       ArrayList<Integer> arrayList = new ArrayList<>();
 
     }
 
@@ -35,7 +37,7 @@ class X<T extends Integer>{
     public void print() {
     }
 }
-class Y<T extends Integer> extends X{
+class Y<T extends Number> extends X{
     T value;
 
     Y(T value) {
